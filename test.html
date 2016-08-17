@@ -1,0 +1,433 @@
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Hatsuwa</title>
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="images/android-desktop.png">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="images/ios-desktop.png">
+
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <link rel="shortcut icon" href="images/favicon.png">
+
+    <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
+    <!--
+    <link rel="canonical" href="http://www.example.com/">
+    -->
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="mdl_hatuwa/material.min.css">
+    <link rel="stylesheet" href="styles_hatuwa.css">
+    <script src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+ 
+   	<script src="audio.js"></script>
+	<script src="Translator.js"></script>
+	<script src="siriwave.js"></script>
+	<script src="siriwave9.js"></script>
+	
+    <script>
+	
+		var recognition = new webkitSpeechRecognition();
+		recognition.lang = speech_lang;
+		recognition.interimResults = true;
+		var translator = new Translator();
+		var iftran = false;
+		var speech_lang = "ja";
+		
+		var interim_transcript = "";
+		var show_text = "";
+		var is_translate = false;
+		var trans_from = "ja";
+		var trans_to = "en";
+				
+		recognition.onresult = function(event){
+		    var results = event.results;
+		    for (var i = event.resultIndex; i<results.length; i++){
+		    
+		        if(results[i].isFinal){
+			        
+			    	var result_1 = results[i][0].transcript;
+			    	show_text = result_1;
+		            document.getElementById("inputheader").innerHTML=(show_text);
+		            interim_transcript = interim_transcript + " " + event.results[i][0].transcript;
+		            document.getElementById("inputbody").innerHTML=interim_transcript;
+		            if(is_translate){
+								translator.translateLanguage(interim_transcript, {
+							    from: trans_from,
+							    to: trans_to,
+							    api_key: 'AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY', // use your own key
+							    callback: function (translatedText) {
+							    	document.getElementById("inputbody1").innerHTML=translatedText;
+							    }
+							});
+					
+		            }
+		        }
+		   
+		        else{
+			        	 var result_2 = results[i][0].transcript;
+			        	 show_text = result_2;
+					    document.getElementById("inputheader").innerHTML=(show_text);
+					   document.getElementById("inputbody").innerHTML=interim_transcript +" "+ show_text;
+					   
+			           if(is_translate){
+						   translator.translateLanguage(interim_transcript +" "+ show_text, {
+							    from: trans_from,
+							    to: trans_to,
+							    api_key: 'AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY', // use your own key
+							    callback: function (translatedText) {
+							    	document.getElementById("inputbody1").innerHTML=translatedText;
+							    }
+							});
+
+					   
+			           }
+			           
+		        }
+		       
+		        
+		    }
+		};
+		function trannslateText(response){
+			tmptext = response.data.translations[0].translatedText;
+		}
+
+		recognition.onerror = function (event){
+			
+		};
+		recognition.onnomatch = function (){
+			
+		};
+		recognition.onspeechstart = function(){
+
+		};
+		recognition.onspeechend = function(){
+		
+		};
+		recognition.onsoundstart = function(){
+	
+		};
+		recognition.onsoundend = function(){
+					
+		};
+		recognition.onaudiostart = function(){
+		
+				
+		};
+		recognition.onaudioend = function(){
+		
+		};
+		recognition.onend = function(){
+			recognition.start();	
+		};
+		
+		function goRecord()
+		{
+			recognition.lang = speech_lang;
+			recognition.start();
+		}
+	    
+	    
+    </script>
+    
+    <style>
+    #view-source {
+      position: fixed;
+      display: block;
+      right: 0;
+      bottom: 0;
+      margin-right: 40px;
+      margin-bottom: 40px;
+      z-index: 900;
+    }
+
+    </style>
+  </head>
+  <body class="mdl-demo mdl-color--grey-100 mdl-color-text--grey-700 mdl-base" id="bodycontent">
+	 <div id="fade" class="demo-fade" style="display: none;" onclick="endSpeak()" >
+		 <header style="width: 100%">
+			 <div  style="text-align: center;width: 900px;position: absolute;left: 19%;right: 19%;margin-top: 33px"><h2 style="color: #ffffff;text-overflow: clip;white-space: nowrap" id = "inputheader" > </h2></div>
+			 <div id = "overlay" class="overlay" style="left: 8%;right: 8%;margin-top: 30px;width: 1000px;height: 100px">
+		 </header>
+		 <body style="width: 100%" >
+			 <div  style="width: 1000px;height: 800px;font-size: 20px;position: absolute;left: 10%;right: 10%;margin-top: 150px;">
+			 <h4 style="color: #ffffff;line-height: 260%" id="inputbody"></h4> 
+			 </div>
+			 <div  style="width: 1000px;height: 800px;font-size: 20px;position: absolute;left: 10%;right: 10%;margin-top: 180px;">
+			 <h4 style="color: #f9e5ff;line-height: 260%" id="inputbody1"></h4> 
+			 </div>
+		 </body>
+		 
+		 
+		 
+		 
+		 <footer style="position:absolute;bottom: 0;width: 100%;">
+			<div id = "inputwave_container" style="margin:0 auto;width: 500px"></div>
+			 
+		 </footer>
+	 </div> 
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header " id="divcontent">
+      <header class="mdl-layout__header">
+	    <div class="header-container" id="head-container">
+        	<div class="mdl-layout--large-screen-only mdl-layout__header-row" id="title1">
+        	</div>
+        	<div class="mdl-layout--large-screen-only mdl-layout__header-row" id="title2">
+          		<h3>Speaker &amp; Awareness</h3>
+        	</div>
+        	<div class="mdl-layout--large-screen-only mdl-layout__header-row" id="title3">
+        	</div>
+	    </div>
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark">
+          <a href="#overview" class="mdl-layout__tab is-active" onclick="addbaronclickhidden()">Overview</a>
+          <a href="#tools" class="mdl-layout__tab" onclick="addbaronclickhidden()">TOOLS</a>
+          <a href="#features" class="mdl-layout__tab" onclick="addbaronclickhidden()">Details</a>
+         
+          <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent" id="add" style="visibility: hidden">
+            <i class="material-icons" role="presentation">add</i>
+            <span class="visuallyhidden">Add</span>
+          </button>
+        </div>
+      </header>
+      <main class="mdl-layout__content" id="maincontent">
+        <div class="mdl-layout__tab-panel is-active" style="background:#E6E6E6 " id="overview">
+		  <section class="section--center mdl-grid mdl-grid--no-spacing">
+			  <div class="mdl-cell mdl-cell--12-col">
+				  <h4>Overview</h4>
+				  <ul class="toc">
+	                <h4>Contents</h4>
+	                <a href="#lorem1">サイトにつき</a>
+	                <a href="#lorem2">目的</a>
+	                <a href="#lorem3">手段</a>
+	                <a href="#lorem4">About us</a>
+	                
+              	  </ul>
+              	  <h5 id="lorem1">サイトにつき</h5>
+              	  <h5 id="lorem2">目的</h5>
+              	  <h5 id="lorem3">手段</h5>
+              	  <h5 id="lorem4">About us</h5>
+			  </div>
+		  </section>
+          
+        </div>
+        <div class="mdl-layout__tab-panel" style="background:#E6E6E6;height: 100% "  id="tools">
+         <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+	         <header class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone mdl-color--teal-100">
+		         <i class="material-icons">translate</i>
+	         </header>
+	         <div class="mdl-card mdl-cell mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
+		         <div class="mdl-card__supporting-text">
+			         <h4>Recognition &Translation</h4>
+					 	Support <a style="color: #54c3f6">Japanese -> Text</a> or <a style="color: #54c3f6">English -> Text</a> for speech recognition. 
+					 <br>	And <a style="color: #54c3f6">Japanese -> English Text</a> or <a style="color: #54c3f6">English -> Japanese Text</a>.
+		         </div>
+		       
+		         <div class="mdl-card__actions">
+			         <div class="mdl-button mdl-button--primary"  id = "trans_button">Start</a>
+		         </div>
+		         <dialog class = "mdl-dialog" id = "lang_dialog" style="width: 600px;height: 300px">
+		         	<h4>Choose Language</h4>
+		         	<div class="mdl-dialog__content" style="border-top: 1px solid #cecccc">
+		         		<table style="width: 500px">
+			         		<tr>
+				         		<td><h6>Language:</h6></td>
+				         		<td>
+					         		<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
+					         			<input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" id="englishradio" onclick="enonclick()">
+					         			 <span class="mdl-radio__label">English</span>
+					         		</label>
+				         		</td>
+			         			<td>	
+					         		<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">
+					         			 <input type="radio" id="option-2" class="mdl-radio__button" name="options" value="2" id="japaneseradio" onclick="jaonclick()" checked>
+							 			 <span class="mdl-radio__label">Japanese</span>
+				         		</label>
+				         		</td>
+			         		</tr>
+			         		<tr>
+				         		<td><h6>translate:</h6></td>
+				         		<td>
+					         		<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-1" >
+										  <input type="checkbox" id="switch-1" class="mdl-switch__input" onclick="switchonclick()">
+									</label>
+								
+				         		</td>
+				         		<td><a id="translateid">OFF</a></td>
+			         		</tr>	
+		         		</table>	
+		         	
+		         	</div>
+		         	<div class="mdl-dialog__actions" >
+			         	<button type="button" class="mdl-button ok mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">OK</button>
+			         	<button type="button" class="mdl-button close mdl-button--raised mdl-js-ripple-effect mdl-js-button ">Cancel</button>
+		         	</div>
+		         </dialog>
+		         
+	         </div>
+	         
+	         
+         </section>
+         
+        </div>
+        
+       </main> 
+     
+	   <div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
+	   <div class="mdl-snackbar__text"></div>
+	   <button class="mdl-snackbar__action" type="button"></button>
+	   </div>
+	
+     
+    </div>
+    <script>
+	    function addbaronclickvisible(){
+		    document.getElementById("add").style.visibility="visible";
+	    }
+	    function addbaronclickhidden(){
+		    document.getElementById("add").style.visibility="hidden";
+	    }
+    </script>  
+    <script>
+	    
+	    var ifDoing = false;
+	    $(".mdl-layout__content").scroll(function(){
+		if($(".mdl-layout__content").scrollTop()>3)
+	    {	
+		    document.getElementById("head-container").style.height="0px";
+		    document.getElementById("title1").style.visibility="hidden";
+		    document.getElementById("title2").style.visibility="hidden";
+		    document.getElementById("title3").style.visibility="hidden";
+		    
+		    ifDoing = false;
+		    
+	    } else if($(".mdl-layout__content").scrollTop()==0 ){
+		   
+		    ifDoing = true;
+		    
+	    }else{
+		    ifDoing = false;
+	    }
+	    });
+	    
+	
+	     $(window).bind('mousewheel', function(e){
+	   		if(e.originalEvent.wheelDelta/120 > 1.2 && ifDoing)
+	   		{
+	        	isUp = true;
+	        	document.getElementById("head-container").style.height="150px";
+	        	document.getElementById("title1").style.visibility="visible";
+	        	document.getElementById("title2").style.visibility="visible";
+	        	document.getElementById("title3").style.visibility="visible";
+    		}
+
+			});
+			
+	</script>
+	
+	<script>
+		getUserMedia({audio:true}, function(){});
+			var $siri_ios9 = document.getElementById('inputwave_container');
+			var SW9 = new SiriWave9({
+				width: 500,
+				height: 60,
+				speed: 0.6,
+				amplitude: 0.01,
+				frequency:10,
+				container: $siri_ios9,
+				autostart: true,
+			});
+		var dialog = document.getElementById("lang_dialog");
+		var transButton = document.getElementById("trans_button");
+		if(!dialog.showModal){
+			dialogPolyfill.registerDialog(dialog);
+		}
+		transButton.addEventListener("click",function(){
+			dialog.showModal();
+		});
+		dialog.querySelector('.close').addEventListener("click", function(){
+			dialog.close();
+		});
+		dialog.querySelector('.ok').addEventListener("click", function(){
+			dialog.close();
+			document.getElementById("fade").style.display="block";
+			startStopPractice(SW9);
+			if(speech_lang=="ja"){
+				document.getElementById("inputheader").innerHTML=("声をかけてください");
+			}else if(speech_lang=="en"){
+				document.getElementById("inputheader").innerHTML=("Let's speeking.");
+			}
+			goRecord();
+			
+		});
+		
+		
+		function switchonclick(){
+			if(is_translate){
+				is_translate = false;
+				document.getElementById("translateid").innerHTML= "OFF";
+			}else{
+				is_translate = true;
+				document.getElementById("translateid").innerHTML= "ON";	
+			}
+		}
+	
+		function jaonclick(){
+			speech_lang = "ja";
+			trans_from = "ja";
+			trans_to = "en";
+		}
+		function enonclick(){
+			speech_lang = "en";
+			trans_from = "en";
+			trans_to = "ja";
+			console.print("enen");
+		}
+		function endSpeak(){
+			recognition.stop();
+			interim_transcript = "";
+			show_text = "";
+			SW9.stop();
+			document.getElementById("fade").style.display="none";
+		}
+	
+		function lang_onclick(message_lang){
+			var snackbarContainer = document.getElementById("snackbar_lang");
+			var data = {message:message_lang};
+			snackbarContainer.MaterialSnackbar.showSnackbar(data);
+		}
+			
+		
+	
+		
+	</script>
+	<script>
+		var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-52764-14']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+	</script>
+   
+    
+  </body>
+
+</html>
+
