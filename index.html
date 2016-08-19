@@ -41,12 +41,12 @@
     <script>
 	
 		var recognition = new webkitSpeechRecognition();
-		recognition.lang = speech_lang;
-		recognition.interimResults = true;
+		
 		var translator = new Translator();
 		var iftran = false;
 		var speech_lang = "ja";
-		
+		recognition.lang = speech_lang;
+		recognition.interimResults = true;
 		var interim_transcript = "";
 		var show_text = "";
 		var is_translate = false;
@@ -61,9 +61,7 @@
 			        
 			    	var result_1 = results[i][0].transcript;
 			    	show_text = result_1;
-		            document.getElementById("inputheader").innerHTML=(show_text);
-		            interim_transcript = interim_transcript + " " + event.results[i][0].transcript;
-		            document.getElementById("inputbody").innerHTML=interim_transcript;
+		            addrecoglist(show_text)
 		            if(is_translate){
 								translator.translateLanguage(interim_transcript, {
 							    from: trans_from,
@@ -77,26 +75,7 @@
 		            }
 		        }
 		   
-		        else{
-			        	 var result_2 = results[i][0].transcript;
-			        	 show_text = result_2;
-					    document.getElementById("inputheader").innerHTML=(show_text);
-					   document.getElementById("inputbody").innerHTML=interim_transcript +" "+ show_text;
-					   
-			           if(is_translate){
-						   translator.translateLanguage(interim_transcript +" "+ show_text, {
-							    from: trans_from,
-							    to: trans_to,
-							    api_key: 'AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY', // use your own key
-							    callback: function (translatedText) {
-							    	document.getElementById("inputbody1").innerHTML=translatedText;
-							    }
-							});
-
-					   
-			           }
-			           
-		        }
+		        
 		       
 		        
 		    }
@@ -106,29 +85,36 @@
 		}
 
 		recognition.onerror = function (event){
-			
+		
+
 		};
 		recognition.onnomatch = function (){
 			
-		};
-		recognition.onspeechstart = function(){
 
 		};
+		recognition.onspeechstart = function(){
+			
+		};
 		recognition.onspeechend = function(){
-		
+			
+
 		};
 		recognition.onsoundstart = function(){
-	
+			
+			
 		};
 		recognition.onsoundend = function(){
-					
+		
+
 		};
 		recognition.onaudiostart = function(){
-		
+			
+
 				
 		};
 		recognition.onaudioend = function(){
-		
+			
+
 		};
 		recognition.onend = function(){
 			recognition.start();	
@@ -138,6 +124,13 @@
 		{
 			recognition.lang = speech_lang;
 			recognition.start();
+			document.getElementById("progress").style.visibility="visible"
+		}
+		function endRecord()
+		{
+			recognition.stop();
+			document.getElementById("progress").style.visibility="hidden";
+
 		}
 	    
 	    
@@ -202,63 +195,38 @@
           
         </div>
         <div class="mdl-layout__tab-panel" style="background:#E6E6E6;height: 100% "  id="tools">
-         <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-	         <header class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone mdl-color--teal-100">
-		         <i class="material-icons">translate</i>
-	         </header>
-	         <div class="mdl-card mdl-cell mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
-		         <div class="mdl-card__supporting-text">
-			         <h4>Recognition &Translation</h4>
-					 	Support <a style="color: #54c3f6">Japanese -> Text</a> or <a style="color: #54c3f6">English -> Text</a> for speech recognition. 
-					 <br>	And <a style="color: #54c3f6">Japanese -> English Text</a> or <a style="color: #54c3f6">English -> Japanese Text</a>.
-		         </div>
-		       
-		         <div class="mdl-card__actions">
-			         <div class="mdl-button mdl-button--primary"  id = "trans_button">Start</a>
-		         </div>
-		         <dialog class = "mdl-dialog" id = "lang_dialog" style="width: 600px;height: 300px">
-		         	<h4>Choose Language</h4>
-		         	<div class="mdl-dialog__content" style="border-top: 1px solid #cecccc">
-		         		<table style="width: 500px">
-			         		<tr>
-				         		<td><h6>Language:</h6></td>
-				         		<td>
-					         		<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
-					         			<input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" id="englishradio" onclick="enonclick()">
-					         			 <span class="mdl-radio__label">English</span>
-					         		</label>
-				         		</td>
-			         			<td>	
-					         		<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">
-					         			 <input type="radio" id="option-2" class="mdl-radio__button" name="options" value="2" id="japaneseradio" onclick="jaonclick()" checked>
-							 			 <span class="mdl-radio__label">Japanese</span>
-				         		</label>
-				         		</td>
-			         		</tr>
-			         		<tr>
-				         		<td><h6>translate:</h6></td>
-				         		<td>
-					         		<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-1" >
-										  <input type="checkbox" id="switch-1" class="mdl-switch__input" onclick="switchonclick()">
-									</label>
+        	<div class="demo-container mdl-grid">
+	        	<div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+				<div class="page-content mdl-color--white mdl-shadow--4dp mdl-cell mdl-cell--8-col">
+					<div class="left-panel" >
+						<div class="top-panel">
+							<i class="material-icons" style="float:left;margin-top: 20px;margin-left: 15px">translate</i>
+							<div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active" style="float:right;margin-top: 20px;margin-right: 15px;visibility: hidden" id="progress"></div>
+						</div>
+						<div class="low-panel" id="recog-bar">
 								
-				         		</td>
-				         		<td><a id="translateid">OFF</a></td>
-			         		</tr>	
-		         		</table>	
-		         	
-		         	</div>
-		         	<div class="mdl-dialog__actions" >
-			         	<button type="button" class="mdl-button ok mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">OK</button>
-			         	<button type="button" class="mdl-button close mdl-button--raised mdl-js-ripple-effect mdl-js-button ">Cancel</button>
-		         	</div>
-		         </dialog>
-		         
-	         </div>
-	         
-	         
-         </section>
-         
+						
+						</div>
+					</div>
+					<div class="right-panel">
+						<div class="top-panel">
+							<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"for="demo-menu-lower-right">
+								<li class="mdl-menu__item" onclick="goRecord()" >Start</li>
+								<li class="mdl-menu__item" onclick=" cleariteam()">ClearIteam</li>
+								<li class="mdl-menu__item" onclick="endRecord()" >Stop</li>
+							</ul>
+							<button id="demo-menu-lower-right"class="mdl-button mdl-js-button mdl-button--icon" style="float:right;margin-top: 20px;margin-right: 15px">
+								<i class="material-icons">more_vert</i>
+							</button>
+							
+						</div>
+						<div class="low-panel" style="width: 99%;float: right;margin-right:2px" id="voice-bar">
+							
+						</div>
+					</div>
+         		</div>
+        	</div>
+        	<audio src="" class="speech" id="player" hidden></audio>
         </div>
         
        </main> 
@@ -270,6 +238,122 @@
 	
      
     </div>
+     <script>
+	    	function plugvoice(intext){
+		    	var speech = new SpeechSynthesisUtterance();
+		    	speech.voiceURI = 'Google 日本人';
+		    	speech.lang = 'ja-JP';
+		    	speech.text = intext;
+		    	speechSynthesis.speak(speech);
+	    	} 
+     </script>
+     <script>
+	    //this script for add list in right panel
+	    function addvoicelist(intext){
+		    var para = document.getElementById("voice-bar");
+		    var tmpbutton = document.createElement("button");
+		    var tmptext = document.createTextNode(intext);
+		    tmpbutton.className="mdl-button mdl-js-button mdl-js-ripple-effect list-button";
+		    tmpbutton.appendChild(tmptext);
+		    tmpbutton.onclick = function(){
+			    plugvoice(intext);
+		    };
+		    componentHandler.upgradeElement(tmpbutton);
+		    para.appendChild(tmpbutton);
+		    }
+		function cleariteam(){
+			var para = document.getElementById("voice-bar");
+			while(para.firstChild){
+				para.removeChild(para.firstChild);
+			}
+		}
+    </script>
+    <script>
+	    //this script for google suggestion
+	     function getSuggest(searchtext){
+				var script = document.getElementById('google-suggest');
+				if(script)
+					script.parentNode.removeChild(script);
+		
+				var val = searchtext;
+				script = document.createElement('script');
+				url = '//clients1.google.com/complete/search';
+				url = location.protocol + url;
+	
+				// last edit we will add more from google services
+			
+	
+				url += '?q=' +val+ '&client=psy'+ '&ds='+ '&nolables=t';
+				url += '&callback=printSuggest';
+				
+				
+				script.id="google-suggest";
+				script.type= 'text/javascript';
+				script.src = url;
+				document.body.appendChild(script);
+			}
+	    //this script for Left panel onclick
+	    function showvoice(searchtext){
+		    
+		    cleariteam();
+		    getSuggest(searchtext);
+		    window.printSuggest = function (json){
+				var resultText ='';
+				json = json[1];
+				for (var word in json){
+					var suggest = json[word][0];
+					if(suggest){
+						addvoicelist(suggest)
+					}
+				}
+				
+			}
+	    
+	    }
+    </script>
+    <script>
+	    //this script for add list in left panel
+	    var numOflist = 0;
+	    function addrecoglist(intext){
+		    if(numOflist > 9){
+			    numOflist = 0;
+		    }  
+		    var para = document.getElementById("recog-bar");
+		    numOflist = numOflist + 1;
+		    var tmpbutton = document.createElement("button");
+		    if(document.getElementById(numOflist.toString() + '@reg')){
+			    para.removeChild(document.getElementById(numOflist.toString() + '@reg'));
+		    }
+		    tmpbutton.id = numOflist.toString() + "@reg";
+		    var tmptext = document.createTextNode(intext);
+		    tmpbutton.className="mdl-button mdl-js-button mdl-js-ripple-effect list-button";
+		    tmpbutton.appendChild(tmptext);
+		    tmpbutton.onclick = function(){
+			    showvoice(intext);
+		    };
+		    componentHandler.upgradeElement(tmpbutton);
+		    if(para.childNodes[0]){
+			    para.insertBefore(tmpbutton, para.childNodes[0]);
+		    }else{
+			    para.appendChild(tmpbutton)
+		    }
+		    
+		    }
+    </script>
+   
+    
+    <script>
+	    //this script for add list in right panel
+	    function addtestlist(){
+		    var para = document.getElementById("1@reg");
+		    var tmptext = document.createTextNode('test22');
+		    para.innerHTML="test22";
+		    
+		    
+		    }
+    </script>
+    
+    
     <script>
 	    function addbaronclickvisible(){
 		    document.getElementById("add").style.visibility="visible";
@@ -317,62 +401,15 @@
 	
 	<script>
 		
-		var dialog = document.getElementById("lang_dialog");
-		var transButton = document.getElementById("trans_button");
-		if(!dialog.showModal){
-			dialogPolyfill.registerDialog(dialog);
-		}
-		transButton.addEventListener("click",function(){
-			dialog.showModal();
-		});
-		dialog.querySelector('.close').addEventListener("click", function(){
-			dialog.close();
-		});
-		dialog.querySelector('.ok').addEventListener("click", function(){
-			dialog.close();
-			
-			if(speech_lang=="ja"){
-				document.getElementById("inputheader").innerHTML=("声をかけてください");
-			}else if(speech_lang=="en"){
-				document.getElementById("inputheader").innerHTML=("Let's speeking.");
-			}
-			goRecord();
-			
-		});
 		
 		
-		function switchonclick(){
-			if(is_translate){
-				is_translate = false;
-				document.getElementById("translateid").innerHTML= "OFF";
-			}else{
-				is_translate = true;
-				document.getElementById("translateid").innerHTML= "ON";	
-			}
-		}
 	
-		function jaonclick(){
-			speech_lang = "ja";
-			trans_from = "ja";
-			trans_to = "en";
-		}
-		function enonclick(){
-			speech_lang = "en";
-			trans_from = "en";
-			trans_to = "ja";
-			console.print("enen");
-		}
 		function endSpeak(){
 			recognition.stop();
 			interim_transcript = "";
 			show_text = "";
 		}
 	
-		function lang_onclick(message_lang){
-			var snackbarContainer = document.getElementById("snackbar_lang");
-			var data = {message:message_lang};
-			snackbarContainer.MaterialSnackbar.showSnackbar(data);
-		}
 			
 		
 	
