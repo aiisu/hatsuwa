@@ -62,17 +62,7 @@
 			    	var result_1 = results[i][0].transcript;
 			    	show_text = result_1;
 		            addrecoglist(show_text)
-		            if(is_translate){
-								translator.translateLanguage(interim_transcript, {
-							    from: trans_from,
-							    to: trans_to,
-							    api_key: 'AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY', // use your own key
-							    callback: function (translatedText) {
-							    	document.getElementById("inputbody1").innerHTML=translatedText;
-							    }
-							});
-					
-		            }
+		           
 		        }
 		   
 		        
@@ -204,7 +194,7 @@
 							<div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active" style="float:right;margin-top: 20px;margin-right: 15px;visibility: hidden" id="progress"></div>
 						</div>
 						<div class="low-panel" id="recog-bar">
-								
+							
 						
 						</div>
 					</div>
@@ -239,6 +229,30 @@
      
     </div>
      <script>
+	     function addtrans (intext,element){
+		     var translator = new Translator();
+		     translator.translateLanguage(intext, {
+				     from: "ja",
+					 to: "en",
+				     api_key: 'AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY', // use your own key
+					 callback: function (translatedText) {
+				     var tmptext = document.createTextNode(translatedText);
+				     var tmpfont = document.createElement("font");
+				     tmpfont.size = 1;
+				     tmpfont.color = "#b2dfdb";
+				     tmpfont.appendChild(tmptext)
+				     var space = document.createElement("br")
+				     element.appendChild(space);
+				     element.appendChild(tmpfont);
+				}
+			});
+		
+	     }
+	     
+	     
+	 </script>
+     <script>
+	     //this script for voice play
 	    	function plugvoice(intext){
 		    	var speech = new SpeechSynthesisUtterance();
 		    	speech.voiceURI = 'Google 日本人';
@@ -252,12 +266,17 @@
 	    function addvoicelist(intext){
 		    var para = document.getElementById("voice-bar");
 		    var tmpbutton = document.createElement("button");
+		    var tmpfont = document.createElement("font");
+		    tmpfont.size = 3;
 		    var tmptext = document.createTextNode(intext);
-		    tmpbutton.className="mdl-button mdl-js-button mdl-js-ripple-effect list-button";
-		    tmpbutton.appendChild(tmptext);
+		    tmpfont.appendChild(tmptext);
+		    tmpbutton.className="mdl-button mdl-js-button mdl-js-ripple-effect list-button ";
+			tmpbutton.style.borderBottom ="1px solid #F0EFEF";
+		    tmpbutton.appendChild(tmpfont);
 		    tmpbutton.onclick = function(){
 			    plugvoice(intext);
 		    };
+		    addtrans (intext,tmpbutton);
 		    componentHandler.upgradeElement(tmpbutton);
 		    para.appendChild(tmpbutton);
 		    }
@@ -325,9 +344,14 @@
 			    para.removeChild(document.getElementById(numOflist.toString() + '@reg'));
 		    }
 		    tmpbutton.id = numOflist.toString() + "@reg";
+		    var tmpfont = document.createElement("font");
+		    tmpfont.size = 3;
 		    var tmptext = document.createTextNode(intext);
+		    tmpfont.appendChild(tmptext)
 		    tmpbutton.className="mdl-button mdl-js-button mdl-js-ripple-effect list-button";
-		    tmpbutton.appendChild(tmptext);
+		    tmpbutton.appendChild(tmpfont);
+		    addtrans (intext,tmpbutton);
+		    tmpbutton.style.borderBottom ="1px solid #F0EFEF";
 		    tmpbutton.onclick = function(){
 			    showvoice(intext);
 		    };
