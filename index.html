@@ -287,7 +287,7 @@
 			}
 		}
     </script>
-    <script>
+    <script type="text/javascript">
 	    //this script for google suggestion
 	     function getSuggest(searchtext){
 				var script = document.getElementById('google-suggest');
@@ -296,14 +296,12 @@
 		
 				var val = searchtext;
 				script = document.createElement('script');
-				url = '//clients1.google.com/complete/search';
-				url = location.protocol + url;
-	
+				
+				url = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY&cx=016220916461730586706:g0juptilduy&q='
 				// last edit we will add more from google services
 			
 	
-				url += '?q=' +val+ '&client=psy'+ '&ds='+ '&nolables=t';
-				url += '&callback=printSuggest';
+				url += 'abc'
 				
 				
 				script.id="google-suggest";
@@ -316,18 +314,18 @@
 		    
 		    cleariteam();
 		    getSuggest(searchtext);
-		    window.printSuggest = function (json){
+/*		    window.printSuggest = function (json){
 				var resultText ='';
 				json = json[1];
 				for (var word in json){
-					var suggest = json[word][0];
+					var suggest = json[0];
 					if(suggest){
 						addvoicelist(suggest)
 					}
 				}
 				
 			}
-	    
+*/	    
 	    }
     </script>
     <script>
