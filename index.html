@@ -287,8 +287,9 @@
 			}
 		}
     </script>
-    <script type="text/javascript">
+    <script>
 	    //this script for google suggestion
+	    
 	     function getSuggest(searchtext){
 				var script = document.getElementById('google-suggest');
 				if(script)
@@ -297,11 +298,11 @@
 				var val = searchtext;
 				script = document.createElement('script');
 				
-				url = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY&cx=016220916461730586706:g0juptilduy&q='
+				url = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY&cx=016220916461730586706:g0juptilduy&callback=hndlr&q='
 				// last edit we will add more from google services
 			
-	
-				url += 'abc'
+				
+				url += val;
 				
 				
 				script.id="google-suggest";
@@ -309,12 +310,18 @@
 				script.src = url;
 				document.body.appendChild(script);
 			}
-	    //this script for Left panel onclick
+			
+	 
+</script>
+<script>
+   //this script for Left panel onclick
 	    function showvoice(searchtext){
 		    
 		    cleariteam();
 		    getSuggest(searchtext);
-/*		    window.printSuggest = function (json){
+/*		    getSuggest(searchtext);
+		    
+		    window.printSuggest = function (json){
 				var resultText ='';
 				json = json[1];
 				for (var word in json){
@@ -323,11 +330,37 @@
 						addvoicelist(suggest)
 					}
 				}
-				
+				*/
 			}
-*/	    
-	    }
+	    
+	    
     </script>
+
+<script>
+      function hndlr(response) {
+      for (var i = 0; i < response.items.length; i++) {
+        var item = response.items[i];
+        // in production code, item.htmlTitle should have the HTML entities escaped.
+        addvoicelist(item.title);
+        }
+    }
+   </script>
+
+
+<script type="text/javascript">
+	function doSearch(SearchText){
+		var searchBox = document.getElementById("searchbox");
+		var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY&amp;cx=016220916461730586706:g0juptilduy&amp;callback=hndlr&amp;q=";
+		
+		url += SearchText;
+		searchBox.src = url;
+		
+	}
+</script>
+
+
+
+
     <script>
 	    //this script for add list in left panel
 	    var numOflist = 0;
