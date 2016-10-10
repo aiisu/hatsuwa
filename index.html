@@ -289,25 +289,25 @@
     </script>
     <script>
 	    //this script for google suggestion
-	    
-	     function getSuggest(searchtext){
+	    var numOfIndex = 1;
+	    var url = "";
+	     function getSuggest(searchtext,flag){
 				var script = document.getElementById('google-suggest');
 				if(script)
-					script.parentNode.removeChild(script);
-		
+					script.parentNode.removeChild(script);	
 				var val = searchtext;
 				script = document.createElement('script');
 				
-				url = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY&cx=016220916461730586706:g0juptilduy&callback=hndlr&q='
-				// last edit we will add more from google services
-			
-				
-				url += val;
-				
-				
+				if(!flag){
+					url = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY&cx=016220916461730586706:g0juptilduy&callback=hndlr&q='
+					url += val;
+				}
+				tmpUrl = url+ '&start='+ numOfIndex;
+				if(flag)
+					numOfIndex += 1;
 				script.id="google-suggest";
 				script.type= 'text/javascript';
-				script.src = url;
+				script.src = tmpUrl;
 				document.body.appendChild(script);
 			}
 			
@@ -318,7 +318,7 @@
 	    function showvoice(searchtext){
 		    
 		    cleariteam();
-		    getSuggest(searchtext);
+		    getSuggest(searchtext,false);
 /*		    getSuggest(searchtext);
 		    
 		    window.printSuggest = function (json){
@@ -338,10 +338,15 @@
 
 <script>
       function hndlr(response) {
+	 
       for (var i = 0; i < response.items.length; i++) {
         var item = response.items[i];
-        // in production code, item.htmlTitle should have the HTML entities escaped.
         addvoicelist(item.title);
+       
+        }
+        console.log("abc" + parseInt(response.queries.request[0].startIndex));
+        if(parseInt(response.queries.request[0].startIndex)<11){
+	        	getSuggest('',true);
         }
     }
    </script>
