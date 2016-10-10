@@ -343,9 +343,9 @@ function showSnackbar(barMessage,isAlways) {
 					url = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY&cx=016220916461730586706:g0juptilduy&callback=hndlr&q='
 					url += val;
 				}
-				tmpUrl = url+ '&start='+ numOfIndex;
 				if(flag)
 					numOfIndex += 10;
+				tmpUrl = url+ '&start='+ numOfIndex;
 				script.id="google-suggest";
 				script.type= 'text/javascript';
 				script.src = tmpUrl;
