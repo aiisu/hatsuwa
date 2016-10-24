@@ -1,0 +1,334 @@
+<html lang="en" >
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body ng-app="hatsuwa" ng-controller="AppCtrl" layout="column" ng-cloak>
+  <!--
+    Your HTML content here
+  -->  
+  <script src="js/animation.js"></script>
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+  
+  <!-- Your application bootstrap  -->
+  <script type="text/javascript">
+	 var recogition = [];
+	 var recognition_old = [];
+	 var recognition_new = [];
+	 var recognition_click = [];
+	 var possible = [{
+		title:"tittle",
+		subtitle:"subtitle",
+		content:"adsadsadsad",
+		func:"function",
+		colspan: randomSpan(),
+		rowspan: randomSpan() 
+	 }];
+    var word;
+    var mic ;
+	var transitionkind ;
+	var buttonstart ;
+	var leftpain ;
+	var rightpain ;
+	var toolbar;
+	var isFristrecog = true;
+  	var recognition = new webkitSpeechRecognition();
+	var speech_lang = "ja";
+		recognition.lang = speech_lang;
+		recognition.interimResults = true;
+
+
+		recognition.onerror = function (event){
+		
+
+		};
+		recognition.onnomatch = function (){
+			
+
+		};
+		recognition.onspeechstart = function(){
+			
+		};
+		recognition.onspeechend = function(){
+
+		};
+		recognition.onsoundstart = function(){
+			
+			
+		};
+		recognition.onsoundend = function(){
+		
+
+		};
+		recognition.onaudiostart = function(){
+			
+
+				
+		};
+		recognition.onaudioend = function(){
+			
+
+		};
+		recognition.onend = function(){
+			recognition.start();
+		};
+	function randomSpan() {
+    var r = Math.random();
+    if (r < 0.8) {
+      return 2;
+    } else if (r < 0.9) {
+      return 3;
+    } else {
+      return 4;
+    }
+  }
+  var isFirstbutton = true;
+  var isButtonStop = true;
+	  /**
+     * You must include the dependency on 'ngMaterial' 
+     */ 
+    angular.module('hatsuwa', ['ngMaterial'])
+    	.controller('AppCtrl',function($scope){
+	    	$scope.newrecognitions = recognition_new;
+	    	$scope.oldrecognitions = recognition_old;
+	    	$scope.clickedrecognitions = recognition_click;
+	    	$scope.possibles = possible;
+	    	$scope.mic_click=function(){
+		    	if(isFirstbutton){
+			    	isFirstbutton = false;
+		    	word = document.getElementById("buttonword");
+				mic = document.getElementById("mic");
+				transitionkind = whichTransitionEvent();
+				buttonstart = document.getElementById("buttonstart");
+				leftpain = document.getElementById("leftpain");
+				rightpain = document.getElementById("rightpain");
+				toolbar = document.getElementById("toolbar");
+		    	mic.addEventListener('animationend', function(){
+					mic.style.display = "none";
+					buttonstart.align = "center";
+					word.classList.add("wordfont_center");
+					word.innerHTML = "STOP";
+					word.classList.remove("wordcolor_button");
+					word.classList.add("wordfont_center");
+					word.classList.add("wordcolor_button_operate");
+					word.classList.remove("get2invisible");
+					word.classList.add("get2visible");
+					leftpain.style.display = "block";
+					leftpain.classList.add("get2visible");
+					rightpain.style.display = "block";
+					rightpain.classList.add("get2visible");	
+					toolbar.classList.add("md-primary");	
+			},false);
+			word.addEventListener('animationend', function(){
+			   	mic.classList.add("get2invisible");
+			 	document.getElementById("toolbar").classList.add("raised");
+				document.getElementById("backgroudcontent").classList.add("changecolor");
+				buttonstart.classList.add("movetobutton");
+				toolbar.classList.add("changecolor2indigo");
+		},false);	
+		    	mic.innerHTML = "mic";
+		    	word.innerHTML = "Please Speak Something";
+		    	recognition.start();
+		    	}else{
+			    	if(isButtonStop){
+				    	isButtonStop = false;
+				    	word.innerHTML = "Start";
+				    	recognition.stop();
+			    	}else{
+				    	isButtonStop = true;
+				    	word.innerHTML = "Stop";
+				    	recognition.start();
+			    	}
+		    	}
+		    	
+		    	possible.unshift({title:"tittle",subtitle:"subtitle",content:"adsadsadsad",func:"function",colspan: randomSpan(),rowspan: randomSpan()});
+	    	};
+			recognition.onresult = function(event){
+					var results = event.results;
+					for (var i = event.resultIndex; i<results.length; i++){
+		    
+					if(results[i].isFinal){
+			        var result_tmp = results[i][0].transcript;
+			        if(isFristrecog){
+				        isFristrecog = false;
+				        word.innerHTML = result_tmp;
+				        word.classList.add("get2invisible");
+			        }
+			        if(recognition_new.length < 5){
+				        recognition_new.push({result:result_tmp});
+			        }else{
+				        recognition_old.push(recognition_new.shift());
+				        recognition_new.push({result:result_tmp});
+			        }
+				      
+						$scope.$apply(function(){
+							$scope.newrecognitions = recognition_new;
+					    	$scope.oldrecognitions = recognition_old;
+						});
+					
+					}
+		    	}
+				};	
+			$scope.resultclick = function(resultin){
+				recognition_click.push({result:resultin});
+				$scope.$apply(function(){
+							$scope.clickedrecognitions = recognition_click;
+						});
+			};	
+				
+    	})
+		.config(function($mdThemingProvider) {
+			$mdThemingProvider.theme('default')
+				.primaryPalette('indigo',{
+					'default':'500',
+					'hue-1':'50',
+					'hue-2':'100',
+					'hue-3':'200'
+				})
+				.accentPalette('grey',{
+					'default':'500',
+					'hue-1':'50',
+					'hue-2':'100',
+					'hue-3':'400'
+				})
+				.backgroundPalette('grey');
+	});
+  </script>
+
+  
+  <md-toolbar class = "md-accent md-hue-1">
+    <div class="md-toolbar-tools md-accent toptoolbar md-hue-1" id="toolbar" >
+        <span flex></span>
+        <md-button class="md-icon-button" aria-label="Icon">
+          <md-tooltip>add</md-tooltip>
+          <md-icon md-font-set="material-icons"> add </md-icon>
+        </md-button>
+        <md-button class="md-icon-button" aria-label="Icon">
+          <md-tooltip>Help</md-tooltip>
+          <md-icon md-font-set="material-icons md-dark"> help </md-icon>
+        </md-button>
+   	</div>
+  </md-toolbar>
+  <md-progress-linear md-mode="indeterminate" style="height: 1px;display: none"></md-progress-linear>
+  <md-content flex >
+
+  		<div class="divinbox" id="backgroudcontent" layout="column" layout-gt-sm="row" style="overflow: hidden;">
+  			<md-button layout="row"  ng-controller="AppCtrl" class="md-raised buttonstart"  ng-click="mic_click()" id="buttonstart">
+  				<div id="buttonword" class="wordcolor_button wordfont_button">Click to Start</div>
+  				<md-icon md-font-set="material-icons" style="float: right ;margin-right: 10px" id="mic"> mic_none</md-icon>
+  			</md-button>
+    	<div flex-gt-sm="40" style="background-color: white;display: none;" id="leftpain">
+	    	<md-toolbar layout="row" class="md-primary md-hue-3">
+	    		<span>Recognition</span>
+	    	</md-toolbar>
+	    	<md-content style="height: 100%;background-color: white" >
+	    		<section>
+		    		<md-subheader style="background-color: white;color: #E91E63" >Searched Recognition</md-subheader>
+			    	<md-list flex>
+			    		<md-list-item ng-controller="AppCtrl" class="md-list-item-text" ng-repeat="clickedrecognition in clickedrecognitions" ng-click="null" style = "background-color: white">
+			    			<div class="md-list-item-text">
+			    				<h3>{{clickedrecognition.result}}</h3>
+			    			</div>
+			    		
+			    		</md-list-item>
+			    	</md-list>
+			    	<md-divider></md-divider>
+		    	</section>
+		    	<section>
+		    		<md-subheader style="background-color: white;color: #9C27B0">New Recognition</md-subheader>
+			    	<md-list flex >
+			    		<md-list-item ng-controller="AppCtrl" class="md-list-item-text" ng-repeat="newrecognition in newrecognitions" ng-click="resultclick(newrecognition.result)" style = "background-color: white">
+			    			<div class="md-list-item-text">
+			    				<h3>{{newrecognition.result}}</h3>
+			    			</div>
+			    		</md-list-item>
+			    	</md-list>
+			    	<md-divider></md-divider>
+		    	</section>
+		    	<section>
+		    		<md-subheader style="background-color: white;color: #3F51B5">Old Recognition</md-subheader>
+			    	<md-list flex >
+			    		<md-list-item ng-controller="AppCtrl" class="md-list-item-text" ng-repeat="oldrecognition in oldrecognitions" ng-click="resultclick(oldrecognition.result)" style = "background-color: white">
+			    			<div class="md-list-item-text">
+			    				<h3>{{oldrecognition.result}}</h3>
+			    			</div>
+			    		</md-list-item>
+			    	</md-list>
+		    	</section>
+	    	</md-content>	
+    	</div>
+    	<md-divider></md-divider>
+    	<div class="md-background" flex-gt-sm="60" style="display: none;" id="rightpain">
+	    	<md-toolbar layout="row center" class="md-primary md-hue-3">
+	    		<span>Possible Result</span>
+	    	</md-toolbar>
+				<md-content style="height: 100%" >
+					<md-grid-list
+						class="md-background"
+					 	md-cols-xs="1" md-cols-sm="2" md-cols-md="6" md-cols-gt-md="8"
+				        md-row-height-gt-md="1:1" md-row-height="1:1"
+				        md-gutter="0px" md-gutter-gt-sm="0px" >
+
+						    <md-grid-tile
+						    	style="background-color: white"
+						    	ng-repeat="possible in possibles"
+						        md-rowspan="{{possible.rowspan}}" 
+						        md-colspan="{{possible.colspan}}" md-colspan-sm="{{possible.colspan}}" md-colspan-xs="{{possible.colspan}}">
+						        <div layout="column" style="border: 1px solid rgba(255, 255, 255, 0)" layout-fill>
+									<md-card layout-fill layout="column">
+										<md-card-title>
+											<md-card-title-text>
+												<span class="md-headline">{{possible.title}}</span>
+												<span class="md-subhead">{{possible.subtitle}}</span>
+											</md-card-title-text>
+										</md-card-title>
+										<md-card-content>
+											<p>{{possible.content}}</p>
+										</md-card-content>
+										<div style="height: 30px;width: 100%;background: rgba(158, 154, 154, 0.55);text-align:center;color: white" layout="column">Speek</div>
+									</md-card>
+						        </div>	
+						   
+						    </md-grid-tile>
+
+  </md-grid-list>
+				
+				
+				
+				
+				<!--
+					<md-grid-list 
+								md-cols="3" md-cols-gt-md="6" md-cols-gt-sm="5" md-cols-md="4"
+								md-row-height="4:3" md-row-gt-md="4:3" md-row-gt-sm="4:3" md-row-md="4:3"
+								md-gutter="1px" >
+						<md-grid-title ng-repeat="possible in possibles" 
+							md-colspan="{{possible.colspan}}" md-colspan-gt-md="{{possible.colspan}}" md-colspan-gt-sm="{{possible.colspan}}" md-colspan-md="{{possible.colspan}}" 
+							md-rowspan="{{possible.rowspan}}"
+							style="border: 1px solid #F0EFEF">
+							   
+						</md-grid-title>
+									
+					</md-grid-list>
+					-->
+				</md-content>
+    	</div>
+  		</div>
+  </md-content>
+
+</body>
+</html>
+
+<!--
+Copyright 2016 Google Inc. All Rights Reserved. 
+Use of this source code is governed by an MIT-style license that can be in foundin the LICENSE file at http://material.angularjs.org/license.
+-->
