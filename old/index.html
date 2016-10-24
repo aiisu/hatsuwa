@@ -52,7 +52,8 @@
 		var is_translate = false;
 		var trans_from = "ja";
 		var trans_to = "en";
-				
+		var isFirstReg = true;
+		var isFirstVoice = true;		
 		recognition.onresult = function(event){
 		    var results = event.results;
 		    for (var i = event.resultIndex; i<results.length; i++){
@@ -64,11 +65,16 @@
 		            addrecoglist(show_text)
 		           
 		        }
-		   
+				if (isFirstReg){
+			    	showSnackbar("You can click the recognition result for more",true);
+					isFirstReg = false;
+		    	}
 		        
 		       
 		        
 		    }
+		    
+		    	
 		};
 		function trannslateText(response){
 			tmptext = response.data.translations[0].translatedText;
@@ -114,13 +120,14 @@
 		{
 			recognition.lang = speech_lang;
 			recognition.start();
-			document.getElementById("progress").style.visibility="visible"
+			document.getElementById("progress").style.visibility="visible";
+			showSnackbar("Speak to Recognition",false);
 		}
 		function endRecord()
 		{
 			recognition.stop();
 			document.getElementById("progress").style.visibility="hidden";
-
+			showSnackbar("Speech Recognition Stop",false);
 		}
 	    
 	    
@@ -147,7 +154,7 @@
         	<div class="mdl-layout--large-screen-only mdl-layout__header-row" id="title1">
         	</div>
         	<div class="mdl-layout--large-screen-only mdl-layout__header-row" id="title2">
-          		<h3>Speaker &amp; Awareness</h3>
+          		<h3>Speaker &amp; Learning</h3>
         	</div>
         	<div class="mdl-layout--large-screen-only mdl-layout__header-row" id="title3">
         	</div>
@@ -219,6 +226,11 @@
         	<audio src="" class="speech" id="player" hidden></audio>
         </div>
         
+		<div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
+		  <div class="mdl-snackbar__text"></div>
+		  <button class="mdl-snackbar__action" type="button"></button>
+		</div>
+
        </main> 
      
 	   <div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
@@ -228,6 +240,34 @@
 	
      
     </div>
+    
+    <script>
+function showSnackbar(barMessage,isAlways) {
+  'use strict';
+  var snackbarContainer = document.querySelector('#snackbar');
+  
+    'use strict';
+    if(isAlways) 
+	    var data = {
+	      message: barMessage,
+	      timeout: 10000
+	    };
+	else
+		var data = {
+	      message: barMessage,
+	      timeout: 5000
+	    };    
+    snackbarContainer.MaterialSnackbar.showSnackbar(data);
+}
+</script>
+        
+    
+    
+    
+    
+    
+    
+    
      <script>
 	     function addtrans (intext,element){
 		     var translator = new Translator();
@@ -275,6 +315,7 @@
 		    tmpbutton.appendChild(tmpfont);
 		    tmpbutton.onclick = function(){
 			    plugvoice(intext);
+			    isFirstVoice = false;
 		    };
 		    addtrans (intext,tmpbutton);
 		    componentHandler.upgradeElement(tmpbutton);
@@ -289,25 +330,25 @@
     </script>
     <script>
 	    //this script for google suggestion
-	    
-	     function getSuggest(searchtext){
+	    var numOfIndex = 1;
+	    var url = "";
+	     function getSuggest(searchtext,flag){
 				var script = document.getElementById('google-suggest');
 				if(script)
-					script.parentNode.removeChild(script);
-		
+					script.parentNode.removeChild(script);	
 				var val = searchtext;
 				script = document.createElement('script');
 				
-				url = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY&cx=016220916461730586706:g0juptilduy&callback=hndlr&q='
-				// last edit we will add more from google services
-			
-				
-				url += val;
-				
-				
+				if(!flag){
+					url = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY&cx=016220916461730586706:g0juptilduy&callback=hndlr&q='
+					url += val;
+				}
+				if(flag)
+					numOfIndex += 10;
+				tmpUrl = url+ '&start='+ numOfIndex;
 				script.id="google-suggest";
 				script.type= 'text/javascript';
-				script.src = url;
+				script.src = tmpUrl;
 				document.body.appendChild(script);
 			}
 			
@@ -318,7 +359,10 @@
 	    function showvoice(searchtext){
 		    
 		    cleariteam();
-		    getSuggest(searchtext);
+		    numOfIndex = 1;
+		    getSuggest(searchtext,false);
+		    isFirstReg = false;
+		    showSnackbar('You can click on the result on the left for voice',true)
 /*		    getSuggest(searchtext);
 		    
 		    window.printSuggest = function (json){
@@ -338,10 +382,17 @@
 
 <script>
       function hndlr(response) {
+	 
       for (var i = 0; i < response.items.length; i++) {
         var item = response.items[i];
-        // in production code, item.htmlTitle should have the HTML entities escaped.
         addvoicelist(item.title);
+       
+        }
+        console.log("abc" + parseInt(response.queries.request[0].startIndex));
+        if(parseInt(response.queries.request[0].startIndex)<100){
+	        	getSuggest('',true);
+        }else{
+	        	numOfIndex = 1;
         }
     }
    </script>

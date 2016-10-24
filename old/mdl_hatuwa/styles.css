@@ -87,7 +87,7 @@ html, body {
 }
 .left-panel{        
     background-color:rgba(232, 232, 232, 0.50);
-    width:70px;
+    width:400px;
     height:100%;
     float:left;
     border-right:1px solid #cecccc;
@@ -100,7 +100,7 @@ html, body {
 .right-panel{        
     background-color:#fafafa;
 	height:100%;
-    margin:0 0 0 71px;
+    margin:0 0 0 401px;
     }
 .top-panel{        
     width:100%;

@@ -1,0 +1,123 @@
+.contentdemoBasicUsage div.demo-content {
+  height: 450px; }
+
+.contentdemoBasicUsage div[ng-controller] {
+  height: 100%;
+  padding-bottom: 15px; }
+
+.contentdemoBasicUsage md-content {
+  padding: 24px; }
+  
+.toptoolbar{
+	
+}
+.toptoolbar.raised{
+	-webkit-animation: addshadow 2s forwards; /* Safari 4.0 - 8.0 */
+	animation: addshadow 2s forwards;
+}
+@-webkit-keyframes addshadow {
+    0%   {border: 0px solid #ddd;  }
+    100% {border: 1px solid #ddd;  }
+}/* Standard syntax */
+@keyframes addshadow {
+  	0%   {border: 0px solid #ddd;}
+    100% {border: 1px solid #ddd; }
+}
+.divinbox{
+	width: 100%;
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+}
+.divinbox.changecolor{
+	-webkit-animation: changecolor 2s forwards; /* Safari 4.0 - 8.0 */
+	animation: changecolor 2s forwards;
+}
+@-webkit-keyframes changecolor {
+    0%   {background: #F5F5F5;}
+    100% {background: #FAFAFA;}
+}/* Standard syntax */
+@keyframes changecolor {
+  	0%   {background: #F5F5F5;}
+    100% {background: #FAFAFA;}
+}
+changecolor2indigo{
+	-webkit-animation: changecolor2indigo 2s forwards; /* Safari 4.0 - 8.0 */
+	animation: changecolor2indigo 2s forwards;
+}
+@-webkit-keyframes changecolor2indigo {
+    0%   {background: #FAFAFA;}
+    100% {background:#3F51B5 ;}
+}/* Standard syntax */
+@keyframes changecolor2indigo {
+  	0%   {background: #FAFAFA;}
+    100% {background: #3F51B5 ;}
+}
+.buttonstart{
+	width: 400px;
+	height: 50px;
+	background-color: #FAFAFA;
+	position: absolute;
+	bottom: 55%;
+	right: 35%;
+	z-index: 9999;
+}
+.buttonstart.movetobutton{
+  -webkit-animation: movetobottom 2s forwards; /* Safari 4.0 - 8.0 */
+  animation: movetobottom 2s forwards;
+}
+@-webkit-keyframes movetobottom {
+    0%   {bottom: 55%;right: 35%;background: #FAFAFA; width: 400px;}
+    100% {bottom: 3%;right: 3%;background: #3F51B5; width: 100px;}
+}
+/* Standard syntax */
+@keyframes movetobottom {
+  	0%   {bottom: 55%;right: 35%;background: #FAFAFA; width: 400px;}
+    100% {bottom: 3%;right: 3%;background: #3F51B5; width: 100px;}
+}
+.get2invisible{
+	-webkit-animation: get2invisible 2s forwards; /* Safari 4.0 - 8.0 */
+	animation: get2invisible 2s forwards;
+}
+@-webkit-keyframes get2invisible {
+    0%   {opacity:1;}
+    100% {opacity:0;}
+}
+/* Standard syntax */
+@keyframes get2invisible {
+  	0%   {opacity:1;}
+    100% {opacity:0;}
+}
+.get2visible{
+	-webkit-animation: get2visible 2s forwards; /* Safari 4.0 - 8.0 */
+	animation: get2visible 2s forwards;
+}
+@-webkit-keyframes get2visible {
+    0%   {opacity:0;}
+    100% {opacity:1;}
+}
+/* Standard syntax */
+@keyframes get2visible {
+  	0%   {opacity:0;}
+    100% {opacity:1;}
+}
+
+
+
+.wordfont_button{
+	font-size:20px;
+}
+.wordcolor_button{
+	color: black;
+}
+.wordfont_button{
+	font-size:20px;
+}
+.wordfont_center{
+	text-align: center;
+}
+.wordcolor_button_operate{
+	color: white;
+}
+
