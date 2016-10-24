@@ -46,7 +46,42 @@
 	var speech_lang = "ja";
 		recognition.lang = speech_lang;
 		recognition.interimResults = true;
+<<<<<<< HEAD
 
+=======
+		var interim_transcript = "";
+		var show_text = "";
+		var is_translate = false;
+		var trans_from = "ja";
+		var trans_to = "en";
+		var isFirstReg = true;
+		var isFirstVoice = true;		
+		recognition.onresult = function(event){
+		    var results = event.results;
+		    for (var i = event.resultIndex; i<results.length; i++){
+		    
+		        if(results[i].isFinal){
+			        
+			    	var result_1 = results[i][0].transcript;
+			    	show_text = result_1;
+		            addrecoglist(show_text)
+		           
+		        }
+		   
+		        
+		       
+		        
+		    }
+		    if (isFirstReg){
+			    showSnackbar("You can click the recognition result for more",true);
+			    isFirstReg = false;
+		    }
+		    	
+		};
+		function trannslateText(response){
+			tmptext = response.data.translations[0].translatedText;
+		}
+>>>>>>> 075ef6ec567414f95be422ae9e8dc1c85dfc175b
 
 		recognition.onerror = function (event){
 		
@@ -81,6 +116,7 @@
 		};
 		recognition.onend = function(){
 			recognition.start();
+<<<<<<< HEAD
 		};
 	function randomSpan() {
     var r = Math.random();
@@ -156,6 +192,252 @@
 			recognition.onresult = function(event){
 					var results = event.results;
 					for (var i = event.resultIndex; i<results.length; i++){
+=======
+			document.getElementById("progress").style.visibility="visible";
+			showSnackbar("Speak to Recognition",false);
+		}
+		function endRecord()
+		{
+			recognition.stop();
+			document.getElementById("progress").style.visibility="hidden";
+			showSnackbar("Speech Recognition Stop",false);
+		}
+	    
+	    
+    </script>
+    
+    <style>
+    #view-source {
+      position: fixed;
+      display: block;
+      right: 0;
+      bottom: 0;
+      margin-right: 40px;
+      margin-bottom: 40px;
+      z-index: 900;
+    }
+
+    </style>
+  </head>
+  <body class="mdl-demo mdl-color--grey-100 mdl-color-text--grey-700 mdl-base" id="bodycontent">
+	 
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header " id="divcontent">
+      <header class="mdl-layout__header">
+	    <div class="header-container" id="head-container">
+        	<div class="mdl-layout--large-screen-only mdl-layout__header-row" id="title1">
+        	</div>
+        	<div class="mdl-layout--large-screen-only mdl-layout__header-row" id="title2">
+          		<h3>Speaker &amp; Learning</h3>
+        	</div>
+        	<div class="mdl-layout--large-screen-only mdl-layout__header-row" id="title3">
+        	</div>
+	    </div>
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark">
+          <a href="#overview" class="mdl-layout__tab is-active" onclick="addbaronclickhidden()">Overview</a>
+          <a href="#tools" class="mdl-layout__tab" onclick="addbaronclickhidden()">TOOLS</a>
+          <a href="#features" class="mdl-layout__tab" onclick="addbaronclickhidden()">Details</a>
+         
+          <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent" id="add" style="visibility: hidden">
+            <i class="material-icons" role="presentation">add</i>
+            <span class="visuallyhidden">Add</span>
+          </button>
+        </div>
+      </header>
+      <main class="mdl-layout__content" id="maincontent">
+        <div class="mdl-layout__tab-panel is-active" style="background:#E6E6E6 " id="overview">
+		  <section class="section--center mdl-grid mdl-grid--no-spacing">
+			  <div class="mdl-cell mdl-cell--12-col">
+				  <h4>Overview</h4>
+				  <ul class="toc">
+	                <h4>Contents</h4>
+	                <a href="#lorem1">サイトにつき</a>
+	                <a href="#lorem2">目的</a>
+	                <a href="#lorem3">手段</a>
+	                <a href="#lorem4">About us</a>
+	                
+              	  </ul>
+              	  <h5 id="lorem1">サイトにつき</h5>
+              	  <h5 id="lorem2">目的</h5>
+              	  <h5 id="lorem3">手段</h5>
+              	  <h5 id="lorem4">About us</h5>
+			  </div>
+		  </section>
+          
+        </div>
+        <div class="mdl-layout__tab-panel" style="background:#E6E6E6;height: 100% "  id="tools">
+        	<div class="demo-container mdl-grid">
+	        	<div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+				<div class="page-content mdl-color--white mdl-shadow--4dp mdl-cell mdl-cell--8-col">
+					<div class="left-panel" >
+						<div class="top-panel">
+							<i class="material-icons" style="float:left;margin-top: 20px;margin-left: 15px">translate</i>
+							<div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active" style="float:right;margin-top: 20px;margin-right: 15px;visibility: hidden" id="progress"></div>
+						</div>
+						<div class="low-panel" id="recog-bar">
+							
+						
+						</div>
+					</div>
+					<div class="right-panel">
+						<div class="top-panel">
+							<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"for="demo-menu-lower-right">
+								<li class="mdl-menu__item" onclick="goRecord()" >Start</li>
+								<li class="mdl-menu__item" onclick=" cleariteam()">ClearIteam</li>
+								<li class="mdl-menu__item" onclick="endRecord()" >Stop</li>
+							</ul>
+							<button id="demo-menu-lower-right"class="mdl-button mdl-js-button mdl-button--icon" style="float:right;margin-top: 20px;margin-right: 15px">
+								<i class="material-icons">more_vert</i>
+							</button>
+							
+						</div>
+						<div class="low-panel" style="width: 99%;float: right;margin-right:2px" id="voice-bar">
+							
+						</div>
+					</div>
+         		</div>
+        	</div>
+        	<audio src="" class="speech" id="player" hidden></audio>
+        </div>
+        
+		<div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
+		  <div class="mdl-snackbar__text"></div>
+		  <button class="mdl-snackbar__action" type="button"></button>
+		</div>
+
+       </main> 
+     
+	   <div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
+	   <div class="mdl-snackbar__text"></div>
+	   <button class="mdl-snackbar__action" type="button"></button>
+	   </div>
+	
+     
+    </div>
+    
+    <script>
+function showSnackbar(barMessage,isAlways) {
+  'use strict';
+  var snackbarContainer = document.querySelector('#snackbar');
+  
+    'use strict';
+    if(isAlways) 
+	    var data = {
+	      message: barMessage,
+	      timeout: 10000
+	    };
+	else
+		var data = {
+	      message: barMessage,
+	      timeout: 5000
+	    };    
+    snackbarContainer.MaterialSnackbar.showSnackbar(data);
+}
+</script>
+        
+    
+    
+    
+    
+    
+    
+    
+     <script>
+	     function addtrans (intext,element){
+		     var translator = new Translator();
+		     translator.translateLanguage(intext, {
+				     from: "ja",
+					 to: "en",
+				     api_key: 'AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY', // use your own key
+					 callback: function (translatedText) {
+				     var tmptext = document.createTextNode(translatedText);
+				     var tmpfont = document.createElement("font");
+				     tmpfont.size = 1;
+				     tmpfont.color = "#b2dfdb";
+				     tmpfont.appendChild(tmptext)
+				     var space = document.createElement("br")
+				     element.appendChild(space);
+				     element.appendChild(tmpfont);
+				}
+			});
+		
+	     }
+	     
+	     
+	 </script>
+     <script>
+	     //this script for voice play
+	    	function plugvoice(intext){
+		    	var speech = new SpeechSynthesisUtterance();
+		    	speech.voiceURI = 'Google 日本人';
+		    	speech.lang = 'ja-JP';
+		    	speech.text = intext;
+		    	speechSynthesis.speak(speech);
+	    	} 
+     </script>
+     <script>
+	    //this script for add list in right panel
+	    function addvoicelist(intext){
+		    var para = document.getElementById("voice-bar");
+		    var tmpbutton = document.createElement("button");
+		    var tmpfont = document.createElement("font");
+		    tmpfont.size = 3;
+		    var tmptext = document.createTextNode(intext);
+		    tmpfont.appendChild(tmptext);
+		    tmpbutton.className="mdl-button mdl-js-button mdl-js-ripple-effect list-button ";
+			tmpbutton.style.borderBottom ="1px solid #F0EFEF";
+		    tmpbutton.appendChild(tmpfont);
+		    tmpbutton.onclick = function(){
+			    plugvoice(intext);
+			    isFirstVoice = false;
+		    };
+		    addtrans (intext,tmpbutton);
+		    componentHandler.upgradeElement(tmpbutton);
+		    para.appendChild(tmpbutton);
+		    }
+		function cleariteam(){
+			var para = document.getElementById("voice-bar");
+			while(para.firstChild){
+				para.removeChild(para.firstChild);
+			}
+		}
+    </script>
+    <script>
+	    //this script for google suggestion
+	    var numOfIndex = 1;
+	    var url = "";
+	     function getSuggest(searchtext,flag){
+				var script = document.getElementById('google-suggest');
+				if(script)
+					script.parentNode.removeChild(script);	
+				var val = searchtext;
+				script = document.createElement('script');
+				
+				if(!flag){
+					url = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY&cx=016220916461730586706:g0juptilduy&callback=hndlr&q='
+					url += val;
+				}
+				if(flag)
+					numOfIndex += 10;
+				tmpUrl = url+ '&start='+ numOfIndex;
+				script.id="google-suggest";
+				script.type= 'text/javascript';
+				script.src = tmpUrl;
+				document.body.appendChild(script);
+			}
+			
+	 
+</script>
+<script>
+   //this script for Left panel onclick
+	    function showvoice(searchtext){
+		    
+		    cleariteam();
+		    numOfIndex = 1;
+		    getSuggest(searchtext,false);
+		    isFirstReg = false;
+		    showSnackbar('You can click on the result on the left for voice',true)
+/*		    getSuggest(searchtext);
+>>>>>>> 075ef6ec567414f95be422ae9e8dc1c85dfc175b
 		    
 					if(results[i].isFinal){
 			        var result_tmp = results[i][0].transcript;
@@ -177,6 +459,7 @@
 						});
 					
 					}
+<<<<<<< HEAD
 		    	}
 				};	
 			$scope.resultclick = function(resultin){
@@ -204,6 +487,45 @@
 				.backgroundPalette('grey');
 	});
   </script>
+=======
+				}
+				*/
+			}
+	    
+	    
+    </script>
+
+<script>
+      function hndlr(response) {
+	 
+      for (var i = 0; i < response.items.length; i++) {
+        var item = response.items[i];
+        addvoicelist(item.title);
+       
+        }
+        console.log("abc" + parseInt(response.queries.request[0].startIndex));
+        if(parseInt(response.queries.request[0].startIndex)<100){
+	        	getSuggest('',true);
+        }else{
+	        	numOfIndex = 1;
+        }
+    }
+   </script>
+
+
+<script type="text/javascript">
+	function doSearch(SearchText){
+		var searchBox = document.getElementById("searchbox");
+		var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY&amp;cx=016220916461730586706:g0juptilduy&amp;callback=hndlr&amp;q=";
+		
+		url += SearchText;
+		searchBox.src = url;
+		
+	}
+</script>
+
+
+>>>>>>> 075ef6ec567414f95be422ae9e8dc1c85dfc175b
 
   
   <md-toolbar class = "md-accent md-hue-1">
