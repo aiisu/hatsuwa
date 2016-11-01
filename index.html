@@ -94,6 +94,7 @@
 				if(!flag){
 					url = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY&cx=016220916461730586706:g0juptilduy&callback=hndlr&q='
 					url += val;
+					possible = [];
 				}
 				if(flag)
 					numOfIndex += 10;
@@ -231,7 +232,6 @@
 				};	
 			$scope.resultclick = function(resultin){
 				recognition_click.push({result:resultin});
-				possible = [];
 				getSuggest(resultin,false);
 				$scope.$apply(function(){
 							$scope.clickedrecognitions = recognition_click;
