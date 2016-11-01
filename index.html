@@ -26,14 +26,7 @@
 	 var recognition_old = [];
 	 var recognition_new = [];
 	 var recognition_click = [];
-	 var possible = [{
-		title:"tittle",
-		subtitle:"subtitle",
-		content:"adsadsadsad",
-		func:"function",
-		colspan: randomSpan(),
-		rowspan: randomSpan() 
-	 }];
+	 var possible = [];
     var word;
     var mic ;
 	var transitionkind ;
@@ -82,18 +75,77 @@
 		recognition.onend = function(){
 			recognition.start();
 		};
-	function randomSpan() {
-    var r = Math.random();
-    if (r < 0.8) {
-      return 2;
-    } else if (r < 0.9) {
-      return 3;
-    } else {
-      return 4;
-    }
-  }
+	
   var isFirstbutton = true;
   var isButtonStop = true;
+  
+   
+	    //this script for google suggestion
+	    var numOfIndex = 1;
+	    var url = "";
+	     function getSuggest(searchtext,flag){
+		     	console.log("suggestinon start");
+				var script = document.getElementById('google-suggest');
+				if(script)
+					script.parentNode.removeChild(script);	
+				var val = searchtext;
+				script = document.createElement('script');
+				
+				if(!flag){
+					url = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyBXtn5z_QHVY3BLK1M2-IwfXSNXeJpXHGY&cx=016220916461730586706:g0juptilduy&callback=hndlr&q='
+					url += val;
+				}
+				if(flag)
+					numOfIndex += 10;
+				tmpUrl = url+ '&start='+ numOfIndex;
+				script.id="google-suggest";
+				script.type= 'text/javascript';
+				script.src = tmpUrl;
+				document.body.appendChild(script);
+				console.log("suggestion end");
+			}
+			
+	 function hndlr(response) {
+				 console.log("hndlr start");
+	 
+		      for (var i = 0; i < response.items.length; i++) {
+		        	var item = response.items[i];
+			        var cols;
+			        var row;
+			        if(item.title.length < 20){
+				        cols = 2;
+				        row = 2;
+			        }else if(item.title.length < 40 ){
+				        cols = 2;
+				        row = 3;
+			        }else{
+				        cols = 2;
+				        row = 4;
+			        }
+			        possible.push({
+						title:"Searched",
+						subtitle:"",
+						content:item.title,
+						func:"function",
+						colspan: cols,
+						rowspan: row 
+					 });
+					
+		        }
+		        console.log("abc" + parseInt(response.queries.request[0].startIndex));
+		        if(parseInt(response.queries.request[0].startIndex)<100){
+			        	getSuggest('',true);
+		        }else{
+			        	numOfIndex = 1;
+		        }
+		    }
+
+  
+  
+  
+  
+  
+  
 	  /**
      * You must include the dependency on 'ngMaterial' 
      */ 
@@ -150,8 +202,6 @@
 				    	recognition.start();
 			    	}
 		    	}
-		    	
-		    	possible.unshift({title:"tittle",subtitle:"subtitle",content:"adsadsadsad",func:"function",colspan: randomSpan(),rowspan: randomSpan()});
 	    	};
 			recognition.onresult = function(event){
 					var results = event.results;
@@ -165,10 +215,10 @@
 				        word.classList.add("get2invisible");
 			        }
 			        if(recognition_new.length < 5){
-				        recognition_new.push({result:result_tmp});
+				        recognition_new.push({title:'Recognition',result:result_tmp});
 			        }else{
 				        recognition_old.push(recognition_new.shift());
-				        recognition_new.push({result:result_tmp});
+				        recognition_new.push({title:'Recognition',result:result_tmp});
 			        }
 				      
 						$scope.$apply(function(){
@@ -181,11 +231,25 @@
 				};	
 			$scope.resultclick = function(resultin){
 				recognition_click.push({result:resultin});
+				possible = [];
+				getSuggest(resultin,false);
 				$scope.$apply(function(){
 							$scope.clickedrecognitions = recognition_click;
 						});
-			};	
 				
+			};	
+			setInterval(function(){
+				$scope.$apply(function(){
+			        	$scope.possibles = possible;
+		        	});
+			}, 500);
+			$scope.voice = function(text){
+				var speech = new SpeechSynthesisUtterance();
+		    	speech.voiceURI = 'Google 日本人';
+		    	speech.lang = 'ja-JP';
+		    	speech.text = text;
+		    	speechSynthesis.speak(speech);
+			};	
     	})
 		.config(function($mdThemingProvider) {
 			$mdThemingProvider.theme('default')
@@ -206,8 +270,8 @@
   </script>
 
   
-  <md-toolbar class = "md-accent md-hue-1">
-    <div class="md-toolbar-tools md-accent toptoolbar md-hue-1" id="toolbar" >
+  <md-toolbar class = "md-indigo" style="border-bottom:1px solid #F0EFEF;">
+    <div class="md-toolbar-tools toptoolbar" id="toolbar" >
         <span flex></span>
         <md-button class="md-icon-button" aria-label="Icon">
           <md-tooltip>add</md-tooltip>
@@ -228,50 +292,54 @@
   				<md-icon md-font-set="material-icons" style="float: right ;margin-right: 10px" id="mic"> mic_none</md-icon>
   			</md-button>
     	<div flex-gt-sm="40" style="background-color: white;display: none;" id="leftpain">
-	    	<md-toolbar layout="row" class="md-primary md-hue-3">
-	    		<span>Recognition</span>
+	    	<md-toolbar layout="row" class="md-accent md-hue-1">
+	    		<h2 class="md-title">Recognition</h2>
 	    	</md-toolbar>
+	    	<md-divider></md-divider>
 	    	<md-content style="height: 100%;background-color: white" >
 	    		<section>
-		    		<md-subheader style="background-color: white;color: #E91E63" >Searched Recognition</md-subheader>
+		    		<!--
 			    	<md-list flex>
-			    		<md-list-item ng-controller="AppCtrl" class="md-list-item-text" ng-repeat="clickedrecognition in clickedrecognitions" ng-click="null" style = "background-color: white">
-			    			<div class="md-list-item-text">
-			    				<h3>{{clickedrecognition.result}}</h3>
-			    			</div>
-			    		
+			    		<md-list-item ng-controller="AppCtrl" ng-repeat="clickedrecognition in clickedrecognitions"  style = "background-color: white" layout="row" layout-gt-sm="row">
+							<div flex="10" style="background-color: #79a7dc;">Click</div>
+				    		<h3 flex="90">{{clickedrecognition.result}}</h3>
+						
+						<div style="background-color: #79a7dc;width: inherit;height: inherit">Click</div>
 			    		</md-list-item>
 			    	</md-list>
-			    	<md-divider></md-divider>
+			    	-->	
+			    	<div class="listitem" ng-controller="AppCtrl" ng-repeat="recognition in clickedrecognitions" layout="row" layout-gt-sm="row" >
+					    <div flex="5" class="listbar" style="background-color: #5C6BC0;">
+						    <h6 class="rotateword" style="color:#E8EAF6">Clicked</h6>
+					    </div>
+					    <h3 flex="95" style="padding-left: 15px">{{recognition.result}}</h3>	
+			    	</div>
+			    	
+		    	</section>
+		    	<section >
+		    		<div class="listitem" ng-controller="AppCtrl" ng-repeat="recognition in newrecognitions" layout="row" layout-gt-sm="row" ng-click="resultclick(recognition.result)">
+						    <div flex="5" class="listbar" style="background-color: #9C27B0;" >
+							    <h6 class="rotateword" style="color:#F3E5F5">NEW</h6>
+						    </div>
+						    <h3 flex="95" style="padding-left: 15px">{{recognition.result}}</h3>	
+			    	</div>
 		    	</section>
 		    	<section>
-		    		<md-subheader style="background-color: white;color: #9C27B0">New Recognition</md-subheader>
-			    	<md-list flex >
-			    		<md-list-item ng-controller="AppCtrl" class="md-list-item-text" ng-repeat="newrecognition in newrecognitions" ng-click="resultclick(newrecognition.result)" style = "background-color: white">
-			    			<div class="md-list-item-text">
-			    				<h3>{{newrecognition.result}}</h3>
-			    			</div>
-			    		</md-list-item>
-			    	</md-list>
-			    	<md-divider></md-divider>
-		    	</section>
-		    	<section>
-		    		<md-subheader style="background-color: white;color: #3F51B5">Old Recognition</md-subheader>
-			    	<md-list flex >
-			    		<md-list-item ng-controller="AppCtrl" class="md-list-item-text" ng-repeat="oldrecognition in oldrecognitions" ng-click="resultclick(oldrecognition.result)" style = "background-color: white">
-			    			<div class="md-list-item-text">
-			    				<h3>{{oldrecognition.result}}</h3>
-			    			</div>
-			    		</md-list-item>
-			    	</md-list>
+			    	<div class="listitem" ng-controller="AppCtrl" ng-repeat="recognition in oldrecognitions" layout="row" layout-gt-sm="row" ng-click="resultclick(recognition.result)">
+						    <div flex="5" class="listbar" style="background-color: #FF9800;" >
+							    <h6 class="rotateword" style="color:#FFF3E0">OLD</h6>
+						    </div>
+						    <h3 flex="95" style="padding-left: 15px">{{recognition.result}}</h3>	
+			    	</div>
 		    	</section>
 	    	</md-content>	
     	</div>
-    	<md-divider></md-divider>
+		<md-divider></md-divider>
     	<div class="md-background" flex-gt-sm="60" style="display: none;" id="rightpain">
-	    	<md-toolbar layout="row center" class="md-primary md-hue-3">
-	    		<span>Possible Result</span>
+	    	<md-toolbar layout="row center" class="md-accent md-hue-1">
+	    		<h2 class="md-title">Possible Result</h2>
 	    	</md-toolbar>
+	    	<md-divider></md-divider>
 				<md-content style="height: 100%" >
 					<md-grid-list
 						class="md-background"
@@ -289,13 +357,12 @@
 										<md-card-title>
 											<md-card-title-text>
 												<span class="md-headline">{{possible.title}}</span>
-												<span class="md-subhead">{{possible.subtitle}}</span>
 											</md-card-title-text>
 										</md-card-title>
 										<md-card-content>
 											<p>{{possible.content}}</p>
 										</md-card-content>
-										<div style="height: 30px;width: 100%;background: rgba(158, 154, 154, 0.55);text-align:center;color: white" layout="column">Speek</div>
+										<div style="height: 25px;width: 100%;background: rgba(158, 154, 154, 0.55);text-align:center;color: white" layout="column" ng-click="voice(possible.content)">Speek</div>
 									</md-card>
 						        </div>	
 						   

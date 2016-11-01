@@ -7,7 +7,26 @@
 
 .contentdemoBasicUsage md-content {
   padding: 24px; }
-  
+ 
+.listitem{
+	width: 100%;
+	height: 75px;
+	background: white;
+	border-bottom: 1px solid rgba(207, 205, 205, 0.43);
+}
+.listitem:hover{
+	background: #E0E0E0;
+}
+.listbar{
+	border-right: 1px solid #cecccc;
+}
+.rotateword{
+	 transform:rotate(90deg);
+        -ms-transform:rotate(90deg); /* Internet Explorer 9*/
+        -moz-transform:rotate(90deg); /* Firefox */
+        -webkit-transform:rotate(90deg); /* Safari 和 Chrome */
+        -o-transform:rotate(90deg); /* Opera */
+}
 .toptoolbar{
 	
 }
